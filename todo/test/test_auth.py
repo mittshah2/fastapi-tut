@@ -7,18 +7,19 @@ from fastapi import HTTPException
 
 app.dependency_overrides[get_db] = override_get_db
 
+
 def test_authenticate_user(test_user):
     db = TestingSessionLocal()
 
-    authenticated_user = authenticate_user(test_user.username, 'testpassword', db)
+    authenticated_user = authenticate_user(test_user.username, 'mitt', db)
     assert authenticated_user is not None
     assert authenticated_user.username == test_user.username
 
-    non_existent_user = authenticate_user('WrongUserName', 'testpassword', db)
-    assert non_existent_user is False
+    non_existent_user = authenticate_user('WrongUserName', 'mitt', db)
+    assert non_existent_user is None
 
     wrong_password_user = authenticate_user(test_user.username, 'wrongpassword', db)
-    assert wrong_password_user is False
+    assert wrong_password_user is None
 
 
 def test_create_access_token():
@@ -56,10 +57,3 @@ async def test_get_current_user_missing_payload():
 
     assert excinfo.value.status_code == 401
     assert excinfo.value.detail == 'Could not validate user.'
-
-
-
-
-
-
-

@@ -54,8 +54,3 @@ def test_person_initialization(default_employee):
     assert default_employee.last_name == 'Doe', 'Last name should be Doe'
     assert default_employee.major == 'Computer Science'
     assert default_employee.years == 3
-
-
-
-
-

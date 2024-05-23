@@ -1,14 +1,14 @@
 from todo.routers.todo import get_db, get_user
 from fastapi import status
-from todo.models import Todos
 from todo.test.utils import *
+from todo.main import app
 
 app.dependency_overrides[get_db] = override_get_db
 app.dependency_overrides[get_user] = override_get_current_user
 
 
 def test_read_all_authenticated(test_todo):
-    response = client.get("/")
+    response = client.get("/todo")
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [{'complete': False, 'title': 'Learn to code!',
                                 'description': 'Need to learn everyday!', 'id': 1,
@@ -19,20 +19,20 @@ def test_read_one_authenticated(test_todo):
     response = client.get("/todo/1")
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {'complete': False, 'title': 'Learn to code!',
-                                'description': 'Need to learn everyday!', 'id': 1,
-                                'priority': 5, 'owner_id': 1}
+                               'description': 'Need to learn everyday!', 'id': 1,
+                               'priority': 5, 'owner_id': 1}
 
 
 def test_read_one_authenticated_not_found():
     response = client.get("/todo/999")
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Todo not found.'}
+    assert response.json() == {'detail': "Todo with id 999 not found"}
 
 
 def test_create_todo(test_todo):
-    request_data={
+    request_data = {
         'title': 'New Todo!',
-        'description':'New todo description',
+        'description': 'New todo description',
         'priority': 5,
         'complete': False,
     }
@@ -49,8 +49,8 @@ def test_create_todo(test_todo):
 
 
 def test_update_todo(test_todo):
-    request_data={
-        'title':'Change the title of the todo already saved!',
+    request_data = {
+        'title': 'Change the title of the todo already saved!',
         'description': 'Need to learn everyday!',
         'priority': 5,
         'complete': False,
@@ -64,8 +64,8 @@ def test_update_todo(test_todo):
 
 
 def test_update_todo_not_found(test_todo):
-    request_data={
-        'title':'Change the title of the todo already saved!',
+    request_data = {
+        'title': 'Change the title of the todo already saved!',
         'description': 'Need to learn everyday!',
         'priority': 5,
         'complete': False,
@@ -73,7 +73,7 @@ def test_update_todo_not_found(test_todo):
 
     response = client.put('/todo/999', json=request_data)
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Todo not found.'}
+    assert response.json() == {'detail': 'Todo with id 999 not found'}
 
 
 def test_delete_todo(test_todo):
@@ -87,17 +87,4 @@ def test_delete_todo(test_todo):
 def test_delete_todo_not_found():
     response = client.delete('/todo/999')
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Todo not found.'}
-
-
-
-
-
-
-
-
-
-
-
-
-
+    assert response.json() == {'detail': 'Todo with id 999 not found'}
