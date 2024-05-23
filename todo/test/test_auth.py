@@ -44,7 +44,7 @@ async def test_get_current_user_valid_token():
     token = jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
     user = await get_user(token=token)
-    assert user == {'username': 'testuser', 'id': 1, 'user_role': 'admin'}
+    assert user == {'username': 'testuser', 'id': 1, 'role': 'admin'}
 
 
 @pytest.mark.asyncio
