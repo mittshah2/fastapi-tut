@@ -1,7 +1,7 @@
 FastAPI tutorial.
 
 Alembic commands:
-1. alembic init <directory name>
+1. alembic init \<directory name\>
 2. add db url to alembic.ini
 3. changes in env.py
    1. remove if condition for logging (line 15)
